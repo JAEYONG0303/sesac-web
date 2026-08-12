@@ -24,7 +24,9 @@
     },
   };
 
-  var state = { year: 2024, metric: 'total', selectedRegion: null };
+  // 기본 지표를 총급여로 두면 첫 화면이 "인구 많은 곳이 총액도 크다"는 당연한 그림이 된다.
+  // 노인 1인당으로 시작해야 지역 비교가 바로 의미를 갖는다.
+  var state = { year: 2024, metric: 'perElder', selectedRegion: null };
 
   var DATA = null;
   var byYear = new Map();        // year -> panel rows
@@ -179,13 +181,18 @@
     playBtn.addEventListener('click', function () { togglePlay(playBtn, yearSlider, yearLabel); });
   }
 
+  // 버튼 활성 표시와 경고 문구는 초기 진입 때도 맞춰야 하므로 따로 뺀다
+  function syncMetricUI() {
+    document.querySelectorAll('.metric-btn').forEach(function (b) {
+      b.classList.toggle('is-active', b.dataset.metric === state.metric);
+    });
+    document.getElementById('per-elder-warning').hidden = state.metric !== 'perElder';
+  }
+
   function onMetricChange(metric) {
     if (!METRICS[metric]) return;
     state.metric = metric;
-    document.querySelectorAll('.metric-btn').forEach(function (b) {
-      b.classList.toggle('is-active', b.dataset.metric === metric);
-    });
-    document.getElementById('per-elder-warning').hidden = metric !== 'perElder';
+    syncMetricUI();
     renderSection1();
     renderTrajectory();
   }
@@ -792,6 +799,7 @@
     buildKPI();
     buildConclusion();
     buildControls();
+    syncMetricUI();
     initCartogram();
     registerAllCharts();
     setTimeout(forceInitPendingCharts, 2000);
