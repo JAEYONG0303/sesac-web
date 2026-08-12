@@ -346,7 +346,7 @@
         textStyle: { color: pal.textMuted, fontSize: 12, fontWeight: 400 },
         subtextStyle: { color: pal.text, fontSize: 13, fontWeight: 700 },
       },
-      grid: { left: 58, right: 20, top: 46, bottom: 46, containLabel: true },
+      grid: { left: 58, right: 20, top: 72, bottom: 46, containLabel: true },
       tooltip: {
         trigger: 'item',
         formatter: function (p) {
@@ -358,7 +358,10 @@
         axisLabel: { color: pal.textMuted }, splitLine: { lineStyle: { color: pal.border } },
       },
       yAxis: {
-        type: 'value', name: m.label + '(' + m.unit + ')', nameLocation: 'middle', nameGap: 48,
+        // 한글 축 이름은 세로로 세우면 읽기 어려워서 축 위쪽에 가로로 놓는다
+        type: 'value', name: m.label + '(' + m.unit + ')',
+        nameLocation: 'end', nameRotate: 0, nameGap: 12,
+        nameTextStyle: { align: 'left', color: pal.textMuted },
         axisLabel: { color: pal.textMuted }, splitLine: { lineStyle: { color: pal.border } },
       },
       series: [{
@@ -387,13 +390,15 @@
         trigger: 'axis',
         formatter: function (p) { return p[0].axisValue + '년<br>' + fmtNum(p[0].value, 1) + '조 원'; },
       },
-      grid: { left: 56, right: 20, top: 20, bottom: 36, containLabel: true },
+      grid: { left: 56, right: 20, top: 40, bottom: 36, containLabel: true },
       xAxis: {
         type: 'category', data: YEARS.map(String),
         axisLabel: { color: pal.textMuted }, axisLine: { lineStyle: { color: pal.border } },
       },
       yAxis: {
-        type: 'value', name: '조 원', nameLocation: 'middle', nameGap: 48,
+        type: 'value', name: '조 원',
+        nameLocation: 'end', nameRotate: 0, nameGap: 12,
+        nameTextStyle: { align: 'left', color: pal.textMuted },
         axisLabel: { color: pal.textMuted }, splitLine: { lineStyle: { color: pal.border } },
       },
       series: [{
@@ -421,18 +426,39 @@
     var m = METRICS[state.metric];
     var pal = colors();
 
-    var series = REGIONS.map(function (region) {
-      var rows = DATA.panel
-        .filter(function (r) { return r.region === region && r[m.field] != null; })
-        .sort(function (a, b) { return a.year - b.year; });
-      var isSel = region === state.selectedRegion;
-      var dimmed = !!(state.selectedRegion && !isSel);
+    var byRegion = REGIONS.map(function (region) {
       return {
-        name: regionShort.get(region),
+        region: region,
+        rows: DATA.panel
+          .filter(function (r) { return r.region === region && r[m.field] != null; })
+          .sort(function (a, b) { return a.year - b.year; }),
+      };
+    }).filter(function (d) { return d.rows.length; });
+
+    // 아무것도 선택하지 않았을 때도 읽을 거리가 있도록 최종연도 최상·최하 시도에만 이름을 붙인다
+    var lastVals = byRegion.map(function (d) { return d.rows[d.rows.length - 1][m.field]; });
+    var topRegion = byRegion[lastVals.indexOf(Math.max.apply(null, lastVals))].region;
+    var botRegion = byRegion[lastVals.indexOf(Math.min.apply(null, lastVals))].region;
+
+    var series = byRegion.map(function (d) {
+      var isSel = d.region === state.selectedRegion;
+      var dimmed = !!(state.selectedRegion && !isSel);
+      var isEdge = !state.selectedRegion && (d.region === topRegion || d.region === botRegion);
+      var labeled = isSel || isEdge;
+      return {
+        name: regionShort.get(d.region),
         type: 'line', showSymbol: false,
-        data: rows.map(function (r) { return [r.year, r[m.field]]; }),
-        lineStyle: { width: isSel ? 3 : 1, color: isSel ? pal.accent : pal.grey, opacity: isSel ? 1 : (dimmed ? 0.35 : 0.55) },
-        z: isSel ? 10 : 1,
+        data: d.rows.map(function (r) { return [r.year, r[m.field]]; }),
+        lineStyle: {
+          width: isSel ? 3 : (isEdge ? 2 : 1.2),
+          color: isSel ? pal.accent : (isEdge ? pal.text : pal.grey),
+          opacity: isSel || isEdge ? 1 : (dimmed ? 0.45 : 0.75),
+        },
+        endLabel: labeled ? {
+          show: true, color: isSel ? pal.accent : pal.text, fontSize: 11,
+          formatter: function (p) { return p.seriesName; },
+        } : { show: false },
+        z: isSel ? 10 : (isEdge ? 5 : 1),
         silent: dimmed,
       };
     });
@@ -442,14 +468,16 @@
         trigger: 'item',
         formatter: function (p) { return p.seriesName + '<br>' + p.value[0] + '년 ' + fmtNum(p.value[1], 1) + m.unit; },
       },
-      grid: { left: 56, right: 20, top: 20, bottom: 36, containLabel: true },
+      grid: { left: 56, right: 52, top: 34, bottom: 36, containLabel: true },
       xAxis: {
         type: 'value', min: YEARS[0], max: YEARS[YEARS.length - 1],
         axisLabel: { color: pal.textMuted, formatter: function (v) { return String(v); } },
         splitLine: { show: false }, axisLine: { lineStyle: { color: pal.border } },
       },
       yAxis: {
-        type: 'value', name: m.label + '(' + m.unit + ')', nameLocation: 'middle', nameGap: 52,
+        type: 'value', name: m.label + '(' + m.unit + ')',
+        nameLocation: 'end', nameRotate: 0, nameGap: 12,
+        nameTextStyle: { align: 'left', color: pal.textMuted },
         axisLabel: { color: pal.textMuted }, splitLine: { lineStyle: { color: pal.border } },
       },
       series: series,
