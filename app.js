@@ -689,6 +689,63 @@
     pendingCharts.forEach(function (entry) { if (!charts[entry.key]) initChartNow(entry); });
   }
 
+  // ---------- 결론 ----------
+  // 결론 문장의 숫자도 하드코딩하지 않는다. 데이터가 바뀌면 문장도 같이 바뀌어야 한다.
+  function buildConclusion() {
+    var y0 = DATA.meta.period[0], y1 = DATA.meta.period[1];
+    // 인구를 분모로 쓰므로 pop65가 있는 행만 쓴다 (세종 2012 등 결측 제외)
+    var a = (byYear.get(y0) || []).filter(function (r) { return r.pop65 != null && r.total != null; });
+    var b = (byYear.get(y1) || []).filter(function (r) { return r.pop65 != null && r.total != null; });
+
+    var totRatio = sumField(b, 'total') / sumField(a, 'total');
+    var popRatio = sumField(b, 'pop65') / sumField(a, 'pop65');
+
+    // 노인 1인당 급여 = 수급률 × 수급자 1인당 급여.
+    // 로그를 씌우면 곱이 합이 되므로, 공분산으로 각 항의 기여도를 나눌 수 있다.
+    var rows = b.filter(function (r) { return r.coverage && r.perRecipient && r.perElder; });
+    var lp = rows.map(function (r) { return Math.log(r.perElder); });
+    var lc = rows.map(function (r) { return Math.log(r.coverage); });
+    var lr = rows.map(function (r) { return Math.log(r.perRecipient); });
+    var varP = covariance(lp, lp);
+    var shareCov = covariance(lc, lp) / varP * 100;
+
+    var covs = rows.map(function (r) { return r.coverage; });
+    var pers = rows.map(function (r) { return r.perRecipient; });
+    var covLow = Math.min.apply(null, covs), covHigh = Math.max.apply(null, covs);
+
+    var mixNow = DATA.mix[DATA.mix.length - 1], mixThen = DATA.mix[0];
+
+    fill({
+      growTotal: fmtNum(totRatio, 2) + '배',
+      growPop: fmtNum(popRatio, 2) + '배',
+      growPer: fmtNum(totRatio / popRatio, 2) + '배',
+      shareCoverage: Math.round(shareCov) + '%',
+      shareIntensity: Math.round(100 - shareCov) + '%',
+      gapCoverage: fmtNum(covHigh / covLow, 2) + '배',
+      gapIntensity: fmtNum(Math.max.apply(null, pers) / Math.min.apply(null, pers), 2) + '배',
+      covLow: fmtNum(covLow, 1) + '%',
+      covHigh: fmtNum(covHigh, 1) + '%',
+      homeNow: fmtNum(mixNow.home, 1) + '%',
+      homeThen: fmtNum(mixThen.home, 1) + '%',
+      mildNow: fmtNum(mixNow.mild + mixNow.cognitive, 1) + '%',
+    });
+  }
+
+  function covariance(a, b) {
+    var n = a.length;
+    var ma = a.reduce(function (s, v) { return s + v; }, 0) / n;
+    var mb = b.reduce(function (s, v) { return s + v; }, 0) / n;
+    return a.reduce(function (s, v, i) { return s + (v - ma) * (b[i] - mb); }, 0) / (n - 1);
+  }
+
+  function fill(map) {
+    Object.keys(map).forEach(function (key) {
+      document.querySelectorAll('[data-fill="' + key + '"]').forEach(function (el) {
+        el.textContent = map[key];
+      });
+    });
+  }
+
   function registerAllCharts() {
     registerChart('chart-rank', 'rank', renderRankBar, function (p) { return p.data && p.data.region; });
     registerChart('chart-scatter', 'scatter', renderScatter, function (p) { return p.data && p.data.region; });
@@ -727,6 +784,7 @@
 
     buildIndexes();
     buildKPI();
+    buildConclusion();
     buildControls();
     initCartogram();
     registerAllCharts();

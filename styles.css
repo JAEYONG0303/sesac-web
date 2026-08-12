@@ -294,6 +294,74 @@ a { color: var(--primary); }
 .cartogram-hint { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
 
 /* ---------- 한계 섹션 ---------- */
+/* ---------- 결론 ---------- */
+.findings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: finding;
+}
+.findings > li {
+  counter-increment: finding;
+  position: relative;
+  padding: 20px 0 20px 46px;
+  border-top: 1px solid var(--border);
+}
+.findings > li::before {
+  content: counter(finding);
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.findings p { margin: 0 0 10px; }
+.findings p:last-child { margin-bottom: 0; }
+
+.finding-head {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* 숫자가 먼저 눈에 들어오도록 식처럼 배치 */
+.finding-eq {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 12px 14px;
+  background: var(--bg-alt);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.finding-eq b {
+  font-size: 1.25rem;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+.finding-eq em { font-style: normal; color: var(--text-muted); padding: 0 2px; }
+
+.findings b[data-fill] { color: var(--primary); font-variant-numeric: tabular-nums; }
+
+.findings-caveat {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.87rem;
+  line-height: 1.65;
+}
+
 .limitations {
   border: 1px solid var(--border);
   border-radius: var(--radius);
