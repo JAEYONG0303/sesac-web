@@ -14,12 +14,12 @@
   var PALETTES = {
     light: {
       text: '#1e293b', textMuted: '#64748b', border: '#e2e8f0',
-      primary: '#2563eb', accent: '#ea580c', grey: '#cbd5e1', secondary: '#0d9488', nullBg: '#eef1f5',
+      primary: '#2563eb', accent: '#ea580c', grey: '#cbd5e1', secondary: '#0d9488', tertiary: '#7c3aed', nullBg: '#eef1f5',
       scaleFrom: [219, 234, 254], scaleTo: [30, 58, 138],
     },
     dark: {
       text: '#e2e8f0', textMuted: '#94a3b8', border: '#2c3e5c',
-      primary: '#60a5fa', accent: '#fb923c', grey: '#475569', secondary: '#2dd4bf', nullBg: '#1c293f',
+      primary: '#60a5fa', accent: '#fb923c', grey: '#475569', secondary: '#2dd4bf', tertiary: '#a78bfa', nullBg: '#1c293f',
       scaleFrom: [30, 58, 90], scaleTo: [147, 197, 253],
     },
   };
@@ -515,14 +515,18 @@
           return it.short + '<br>' + it.baseYear + '→2024년 ' + fmtNum(it.ratio, 2) + '배' + (it.baseYear !== 2010 ? ' (세종은 2012년 기준)' : '');
         },
       },
-      grid: { left: 46, right: 10, top: 20, bottom: 40, containLabel: true },
+      // 막대 위 값 라벨과 축 이름이 겹치지 않게 상단 여백을 넉넉히 둔다
+      grid: { left: 46, right: 10, top: 44, bottom: 40, containLabel: true },
       xAxis: {
         type: 'category',
         data: items.map(function (it) { return it.short + (it.baseYear !== 2010 ? '*' : ''); }),
         axisLabel: { color: pal.textMuted, interval: 0 }, axisLine: { lineStyle: { color: pal.border } },
       },
       yAxis: {
-        type: 'value', name: '배수', axisLabel: { color: pal.textMuted, formatter: function (v) { return v + '배'; } },
+        type: 'value', name: '배수',
+        nameLocation: 'end', nameRotate: 0, nameGap: 12,
+        nameTextStyle: { align: 'left', color: pal.textMuted },
+        axisLabel: { color: pal.textMuted, formatter: function (v) { return v + '배'; } },
         splitLine: { lineStyle: { color: pal.border } },
       },
       series: [{
@@ -589,7 +593,8 @@
       series: [
         { name: '중증', type: 'line', stack: 'grade', showSymbol: false, itemStyle: { color: pal.primary }, areaStyle: { color: pal.primary }, lineStyle: { color: pal.primary }, data: DATA.mix.map(function (m) { return m.severe; }) },
         { name: '경증', type: 'line', stack: 'grade', showSymbol: false, itemStyle: { color: pal.accent }, areaStyle: { color: pal.accent }, lineStyle: { color: pal.accent }, data: DATA.mix.map(function (m) { return m.mild; }) },
-        { name: '인지지원', type: 'line', stack: 'grade', showSymbol: false, itemStyle: { color: pal.grey }, areaStyle: { color: pal.grey }, lineStyle: { color: pal.grey }, data: DATA.mix.map(function (m) { return m.cognitive; }) },
+        // 0.3%라 면적으로는 거의 안 보인다. 범례에서라도 식별되도록 옅은 회색 대신 뚜렷한 색을 쓴다
+        { name: '인지지원', type: 'line', stack: 'grade', showSymbol: false, itemStyle: { color: pal.tertiary }, areaStyle: { color: pal.tertiary }, lineStyle: { color: pal.tertiary }, data: DATA.mix.map(function (m) { return m.cognitive; }) },
       ],
     };
     inst.setOption(option, true);
@@ -607,7 +612,8 @@
       var last = byRegionYear.get(region + '__2024');
       if (!base || base.homeShare == null || !last || last.homeShare == null) return null;
       return { region: region, short: regionShort.get(region), start: base.homeShare, end: last.homeShare, baseYear: base.year };
-    }).filter(Boolean).sort(function (a, b) { return a.start - b.start; });
+      // 라벨로 찍히는 값이 2024년이므로 정렬도 2024년 기준이어야 눈으로 순위가 읽힌다
+    }).filter(Boolean).sort(function (a, b) { return a.end - b.end; });
 
     var categories = items.map(function (it) { return it.short + (it.baseYear !== 2010 ? '*' : ''); });
 
