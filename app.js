@@ -40,6 +40,7 @@
   var playTimer = null;
   var playing = false;
   var resizeTimer = null;
+  var lastTheme = null;     // 마지막으로 차트를 그린 테마 (true = 다크)
 
   // ---------- 유틸 ----------
   function isDark() {
@@ -774,11 +775,18 @@
   function onResize() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
+      syncTheme();   // 테마 변경 이벤트를 놓친 경우를 여기서 줍는다
       Object.keys(charts).forEach(function (k) { if (charts[k]) charts[k].resize(); });
     }, 150);
   }
 
-  function onThemeChange() {
+  // 페이지 CSS는 미디어쿼리로 알아서 바뀌지만 차트 색은 다시 그려야 바뀐다.
+  // change 이벤트가 발화하지 않는 환경이 있어(페이지는 라이트, 차트는 다크가 되는 불일치)
+  // 마지막으로 그린 테마를 기억해 두고 어긋나면 다시 그린다.
+  function syncTheme() {
+    var now = isDark();
+    if (now === lastTheme) return;
+    lastTheme = now;
     renderCartogram();
     renderRankBar(); renderScatter(); renderTrendArea(); renderTrajectory();
     renderGrowthBar(); renderMixArea(); renderGradeArea(); renderDumbbell();
@@ -804,10 +812,12 @@
     registerAllCharts();
     setTimeout(forceInitPendingCharts, 2000);
 
+    lastTheme = isDark();
     window.addEventListener('resize', onResize);
+    document.addEventListener('visibilitychange', syncTheme);
     var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    if (mq.addEventListener) mq.addEventListener('change', onThemeChange);
-    else if (mq.addListener) mq.addListener(onThemeChange); // 구형 브라우저 대응
+    if (mq.addEventListener) mq.addEventListener('change', syncTheme);
+    else if (mq.addListener) mq.addListener(syncTheme); // 구형 브라우저 대응
 
     var footerEl = document.getElementById('footer-source');
     footerEl.textContent = '출처: ' + DATA.meta.source + ' · 기간 ' + DATA.meta.period[0] + '~' + DATA.meta.period[1] + '년 · ' + DATA.meta.priceBase + ' · ' + DATA.meta.unitNote;
