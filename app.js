@@ -14,12 +14,12 @@
   var PALETTES = {
     light: {
       text: '#1e293b', textMuted: '#64748b', border: '#e2e8f0',
-      primary: '#2563eb', accent: '#ea580c', grey: '#cbd5e1', nullBg: '#eef1f5',
+      primary: '#2563eb', accent: '#ea580c', grey: '#cbd5e1', secondary: '#0d9488', nullBg: '#eef1f5',
       scaleFrom: [219, 234, 254], scaleTo: [30, 58, 138],
     },
     dark: {
       text: '#e2e8f0', textMuted: '#94a3b8', border: '#2c3e5c',
-      primary: '#60a5fa', accent: '#fb923c', grey: '#475569', nullBg: '#1c293f',
+      primary: '#60a5fa', accent: '#fb923c', grey: '#475569', secondary: '#2dd4bf', nullBg: '#1c293f',
       scaleFrom: [30, 58, 90], scaleTo: [147, 197, 253],
     },
   };
@@ -373,6 +373,11 @@
           opacity: 0.85,
         },
         label: { show: true, formatter: function (p) { return p.data.short; }, position: 'top', color: pal.textMuted, fontSize: 10 },
+        // 지역이 중앙에 몰려 라벨이 겹치므로 자동으로 정리하되, 선택된 지역만은 겹쳐도 항상 보이게 한다
+        labelLayout: function (p) {
+          var d = rows[p.dataIndex];
+          return { hideOverlap: !(d && d.region === state.selectedRegion) };
+        },
       }],
     };
     inst.setOption(option, true);
@@ -554,8 +559,9 @@
       },
       yAxis: { type: 'value', max: 100, name: '%', axisLabel: { color: pal.textMuted }, splitLine: { lineStyle: { color: pal.border } } },
       series: [
-        { name: '재가급여', type: 'line', stack: 'mix', showSymbol: false, areaStyle: { color: pal.primary }, lineStyle: { color: pal.primary }, data: DATA.mix.map(function (m) { return m.home; }) },
-        { name: '시설급여', type: 'line', stack: 'mix', showSymbol: false, areaStyle: { color: pal.grey }, lineStyle: { color: pal.grey }, data: DATA.mix.map(function (m) { return m.inst; }) },
+        { name: '재가급여', type: 'line', stack: 'mix', showSymbol: false, itemStyle: { color: pal.primary }, areaStyle: { color: pal.primary }, lineStyle: { color: pal.primary }, data: DATA.mix.map(function (m) { return m.home; }) },
+        // pal.grey는 흰 배경에서 거의 안 보여서 시설급여만 별도 색(secondary)을 쓴다
+        { name: '시설급여', type: 'line', stack: 'mix', showSymbol: false, itemStyle: { color: pal.secondary }, areaStyle: { color: pal.secondary }, lineStyle: { color: pal.secondary }, data: DATA.mix.map(function (m) { return m.inst; }) },
       ],
     };
     inst.setOption(option, true);
@@ -581,9 +587,9 @@
       },
       yAxis: { type: 'value', max: 100, name: '%', axisLabel: { color: pal.textMuted }, splitLine: { lineStyle: { color: pal.border } } },
       series: [
-        { name: '중증', type: 'line', stack: 'grade', showSymbol: false, areaStyle: { color: pal.primary }, lineStyle: { color: pal.primary }, data: DATA.mix.map(function (m) { return m.severe; }) },
-        { name: '경증', type: 'line', stack: 'grade', showSymbol: false, areaStyle: { color: pal.accent }, lineStyle: { color: pal.accent }, data: DATA.mix.map(function (m) { return m.mild; }) },
-        { name: '인지지원', type: 'line', stack: 'grade', showSymbol: false, areaStyle: { color: pal.grey }, lineStyle: { color: pal.grey }, data: DATA.mix.map(function (m) { return m.cognitive; }) },
+        { name: '중증', type: 'line', stack: 'grade', showSymbol: false, itemStyle: { color: pal.primary }, areaStyle: { color: pal.primary }, lineStyle: { color: pal.primary }, data: DATA.mix.map(function (m) { return m.severe; }) },
+        { name: '경증', type: 'line', stack: 'grade', showSymbol: false, itemStyle: { color: pal.accent }, areaStyle: { color: pal.accent }, lineStyle: { color: pal.accent }, data: DATA.mix.map(function (m) { return m.mild; }) },
+        { name: '인지지원', type: 'line', stack: 'grade', showSymbol: false, itemStyle: { color: pal.grey }, areaStyle: { color: pal.grey }, lineStyle: { color: pal.grey }, data: DATA.mix.map(function (m) { return m.cognitive; }) },
       ],
     };
     inst.setOption(option, true);
@@ -615,9 +621,11 @@
           return it.short + '<br>' + it.baseYear + '년 ' + fmtNum(it.start, 1) + '% → 2024년 ' + fmtNum(it.end, 1) + '%<br>변화 ' + (delta >= 0 ? '+' : '') + fmtNum(delta, 1) + '%p';
         },
       },
-      grid: { left: 56, right: 40, top: 10, bottom: 20, containLabel: true },
+      grid: { left: 56, right: 64, top: 28, bottom: 20, containLabel: true },
       xAxis: {
         type: 'value', name: '재가 비중(%)', min: 0, max: 100,
+        nameLocation: 'end', nameRotate: 0, nameGap: 18,
+        nameTextStyle: { align: 'right', color: pal.textMuted },
         axisLabel: { color: pal.textMuted }, splitLine: { lineStyle: { color: pal.border } },
       },
       yAxis: { type: 'category', data: categories, axisLabel: { color: pal.text }, axisLine: { lineStyle: { color: pal.border } } },
@@ -633,8 +641,9 @@
           return {
             type: 'group',
             children: [
-              { type: 'line', shape: { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1] }, style: { stroke: isSel ? pal.accent : pal.border, lineWidth: isSel ? 3 : 2 } },
-              { type: 'circle', shape: { cx: p1[0], cy: p1[1], r: 5 }, style: { fill: pal.grey } },
+              // 시작점(2010)이 pal.border로 그려지면 사실상 안 보여서 점 하나짜리 차트처럼 보인다 -> textMuted로 대비 확보
+              { type: 'line', shape: { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1] }, style: { stroke: isSel ? pal.accent : pal.textMuted, lineWidth: isSel ? 3 : 2 } },
+              { type: 'circle', shape: { cx: p1[0], cy: p1[1], r: 5 }, style: { fill: isSel ? pal.accent : pal.textMuted } },
               { type: 'circle', shape: { cx: p2[0], cy: p2[1], r: 6 }, style: { fill: isSel ? pal.accent : pal.primary } },
               { type: 'text', style: { text: fmtNum(it.end, 0) + '%', x: p2[0] + 10, y: p2[1], fill: pal.text, fontSize: 10, textVerticalAlign: 'middle' } },
             ],
