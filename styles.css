@@ -241,6 +241,27 @@ a { color: var(--primary); }
 .chart-scroll { overflow-x: auto; }
 .chart-scroll .chart { min-width: 720px; }
 
+/* 차트 아래 용어 설명 — 등급 이름을 모르면 차트의 꺾임을 읽을 수 없다 */
+.glossary {
+  margin: 14px 0 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--border);
+  background: var(--bg-alt);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.glossary dt {
+  font-weight: 700;
+  color: var(--text);
+}
+.glossary dd {
+  margin: 2px 0 10px;
+  padding-left: 0;
+  color: var(--text-muted);
+}
+.glossary dd:last-child { margin-bottom: 0; }
+
 /* ---------- 카토그램 ---------- */
 .cartogram {
   display: grid;

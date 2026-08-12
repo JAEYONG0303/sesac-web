@@ -415,7 +415,7 @@
           lineStyle: { color: pal.accent, type: 'dashed' },
           label: { color: pal.accent, formatter: function (p) { return p.name; }, fontSize: 11 },
           data: [
-            { xAxis: '2014', name: '5등급(경증) 신설' },
+            { xAxis: '2014', name: '4·5등급 신설' },
             { xAxis: '2018', name: '인지지원등급 신설' },
           ],
         },
