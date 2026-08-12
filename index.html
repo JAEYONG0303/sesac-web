@@ -1,188 +1,196 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>권재용</title>
-  <style>
-    body {
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 0 20px;
-      font-family: system-ui, "Malgun Gothic", sans-serif;
-      font-size: 17px;
-      line-height: 1.7;
-      color: #222;
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.5em;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2em;
-    }
-
-    th, td {
-      border: 1px solid #6c5050;
-      padding: 10px 12px;
-      text-align: left;
-    }
-
-    th {
-      background: #c75b5b;
-    }
-
-    td.price {
-      text-align: right;
-    }
-
-    .source {
-      margin-top: 2.5em;
-      font-size: 0.8rem;
-      color: #666;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>장기요양보험 급여 대시보드</title>
+<meta name="description" content="2010~2024년 장기요양보험 공단부담금을 지역·시간·서비스 구조 세 축으로 보여주는 인터랙티브 대시보드">
+<link rel="stylesheet" href="./styles.css">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 </head>
 <body>
-  <h1>권재용</h1>
+<a class="skip-link" href="#main">본문 바로가기</a>
 
-  <p>
-    안녕하세요, 권재용입니다. 무언가를 만들고 고치는 일을 좋아합니다.
-    복잡한 것을 단순하게 정리할 때 가장 즐겁습니다.
-  </p>
-  <p>
-    요즘은 웹과 개발 도구에 관심을 두고 하나씩 배워 나가는 중입니다.
-    이 페이지는 그 기록을 남겨 두려고 만든 첫 페이지입니다.
-  </p>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">장기요양보험 급여 대시보드 · 2010–2024</p>
+    <h1>돈은 커졌다. 어디로, 어떻게 쓰였나.</h1>
+    <p class="lede">
+      장기요양보험 공단부담금은 2010년 3.2조 원에서 2024년 14.8조 원으로 커졌습니다.
+      이 대시보드는 그 돈이 어느 지역에, 어떤 형태로 쓰였는지를 지역·시간·서비스 구조 세 축으로 살펴봅니다.
+      모든 금액은 2024년 불변가격 기준입니다.
+    </p>
+  </div>
+</header>
 
-  <table>
-    <thead>
-      <tr>
-        <th>항목</th>
-        <th>설명</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>좋아하는 것</td>
-        <td>게임, 잠자는것, 그리고 따뜻한 커피 한 잔</td>
-      </tr>
-      <tr>
-        <td>요즘 배우는 것</td>
-        <td>SQL, PYTHON</td>
-      </tr>
-      <tr>
-        <td>오늘 목표</td>
-        <td>내 손으로 만든 첫 웹페이지를 브라우저에서 확인하기</td>
-      </tr>
-    </tbody>
-  </table>
+<section class="kpi-strip wrap" aria-label="핵심 지표">
+  <div class="kpi-card" id="kpi-total">
+    <p class="kpi-label">2024년 총급여</p>
+    <p class="kpi-value">불러오는 중…</p>
+    <p class="kpi-sub">&nbsp;</p>
+  </div>
+  <div class="kpi-card" id="kpi-perelder">
+    <p class="kpi-label">노인 1인당 급여 (전국 평균)</p>
+    <p class="kpi-value">불러오는 중…</p>
+    <p class="kpi-sub">&nbsp;</p>
+  </div>
+  <div class="kpi-card" id="kpi-coverage">
+    <p class="kpi-label">수급률 (시도 중앙값)</p>
+    <p class="kpi-value">불러오는 중…</p>
+    <p class="kpi-sub">&nbsp;</p>
+  </div>
+  <div class="kpi-card" id="kpi-home">
+    <p class="kpi-label">재가 비중</p>
+    <p class="kpi-value">불러오는 중…</p>
+    <p class="kpi-sub">&nbsp;</p>
+  </div>
+</section>
 
-  <h2>노원구 아파트 실거래 살펴보기</h2>
+<div id="fatal-error" class="fatal-error" hidden></div>
 
-  <p>
-    노원구의 아파트 매매 거래 7,190건을 살펴봤습니다. 평균 거래가는 약 6.5억 원이었습니다.
-    가장 비싸게 팔린 상위 5건은 모두 15억 원대로, 평균의 두 배가 넘습니다.
-    비싼 거래만 뽑았으니 평균보다 훨씬 높게 나오는 것이 자연스럽습니다.
-  </p>
+<main id="main">
 
-  <table>
-    <thead>
-      <tr>
-        <th>건물명</th>
-        <th>물건금액(만원)</th>
-        <th>계약일</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>동진신안</td>
-        <td class="price">156,000</td>
-        <td>2026-05-20</td>
-      </tr>
-      <tr>
-        <td>대림벽산(363)</td>
-        <td class="price">155,000</td>
-        <td>2025-07-28</td>
-      </tr>
-      <tr>
-        <td>동진신안</td>
-        <td class="price">154,000</td>
-        <td>2025-09-29</td>
-      </tr>
-      <tr>
-        <td>동진신안</td>
-        <td class="price">153,300</td>
-        <td>2025-09-12</td>
-      </tr>
-      <tr>
-        <td>동진신안</td>
-        <td class="price">152,500</td>
-        <td>2026-04-06</td>
-      </tr>
-    </tbody>
-  </table>
+  <section id="sec1" class="section wrap" aria-labelledby="sec1-title">
+    <h2 id="sec1-title">1. 지역 격차 <span class="q">— 어느 지역이 많이 쓰고 적게 쓰나?</span></h2>
 
-  <h2>장기요양보험 급여, 어디에 많이 쓰이나</h2>
+    <div class="controls">
+      <div class="control-group metric-toggle" id="metric-toggle" role="group" aria-label="지표 선택">
+        <button data-metric="total" class="metric-btn is-active" type="button">총급여</button>
+        <button data-metric="perElder" class="metric-btn" type="button">노인 1인당</button>
+        <button data-metric="perRecipient" class="metric-btn" type="button">수급자 1인당</button>
+        <button data-metric="coverage" class="metric-btn" type="button">수급률</button>
+        <button data-metric="homeShare" class="metric-btn" type="button">재가 비중</button>
+      </div>
 
-  <p>
-    2024년 장기요양보험 공단부담금은 전국 14.8조 원으로, 2010년 3.2조 원의 4.7배가 되었습니다.
-    지역별로 비교하려면 총액보다 노인 1인당 금액이 낫습니다. 인구가 많으면 총액도 당연히 커지기 때문입니다.
-  </p>
+      <div class="control-group year-control">
+        <button id="play-btn" type="button" aria-label="연도 재생 시작">▶</button>
+        <label for="year-slider">연도 <strong id="year-label">2024</strong></label>
+        <input type="range" id="year-slider" min="2010" max="2024" step="1" value="2024">
+      </div>
 
-  <p>
-    노인 1인당 급여는 충청북도가 185만 원으로 가장 높고, 부산광역시가 106만 원으로 가장 낮아
-    1.75배 차이가 납니다. 흥미로운 건 고령화율이 높다고 급여가 많은 게 아니라는 점입니다.
-    둘의 상관계수는 0.29로 약합니다. 부산은 광역시 중 고령화율이 가장 높은데도 1인당 급여는 17개 시도 중 꼴찌이고,
-    서울은 16위입니다. 반대로 인천은 고령화율이 낮은 편인데 1인당 급여는 2위입니다.
-  </p>
+      <div class="control-group">
+        <label for="region-select">시도 선택</label>
+        <select id="region-select"><option value="">선택 안 함</option></select>
+      </div>
+    </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>시도</th>
-        <th>노인 1인당 급여(만원)</th>
-        <th>고령화율(%)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>충청북도</td>
-        <td class="price">185</td>
-        <td class="price">21.0</td>
-      </tr>
-      <tr>
-        <td>인천광역시</td>
-        <td class="price">183</td>
-        <td class="price">16.7</td>
-      </tr>
-      <tr>
-        <td>충청남도</td>
-        <td class="price">182</td>
-        <td class="price">21.4</td>
-      </tr>
-      <tr>
-        <td>전북특별자치도</td>
-        <td class="price">179</td>
-        <td class="price">24.2</td>
-      </tr>
-      <tr>
-        <td>전라남도</td>
-        <td class="price">178</td>
-        <td class="price">26.2</td>
-      </tr>
-    </tbody>
-  </table>
+    <p id="per-elder-warning" class="notice" hidden>
+      노인 1인당 지표는 지역 규모를 보정해 비교하기 좋지만, 분모(노인인구)가 지역마다 다른 속도로 변해 왔습니다.
+      시점 간 비교에는 주의가 필요합니다.
+    </p>
 
-  <p class="source">
-    데이터 1: 서울열린데이터광장 서울시 부동산 실거래가 정보(OA-21275),
-    2025년 7월~2026년 6월 아파트 매매 기준<br>
-    데이터 2: 국민건강보험공단 장기요양보험 통계연보(3-1표)와 통계청 인구·지역내총생산 자료를
-    가공한 시도 패널, 2010~2024년. 금액은 2024년 불변가격 기준
-  </p>
+    <div class="chart-grid">
+      <figure class="chart-card">
+        <figcaption>
+          <h3>카토그램 지도</h3>
+          <p class="chart-note">실제 지리 배치가 아니라, 17개 시도를 격자에 배치한 카토그램입니다. 칸 색이 진할수록 값이 큽니다.</p>
+        </figcaption>
+        <div class="cartogram" id="cartogram" role="img" aria-label="시도별 카토그램. 각 칸을 클릭하면 해당 시도가 선택됩니다."></div>
+        <p class="cartogram-hint">칸을 클릭하면 해당 시도가 선택되어 아래 궤적·덤벨 차트에 강조됩니다.</p>
+      </figure>
+
+      <figure class="chart-card">
+        <figcaption>
+          <h3>순위 막대</h3>
+          <p class="chart-note" id="rank-note">선택 지표 기준 17개 시도 내림차순입니다.</p>
+        </figcaption>
+        <div class="chart" id="chart-rank"></div>
+      </figure>
+
+      <figure class="chart-card">
+        <figcaption>
+          <h3>산점도 — 고령화율과의 관계</h3>
+          <p class="chart-note">X축은 고령화율, Y축은 선택 지표입니다. 상관계수가 화면에 표시됩니다.</p>
+        </figcaption>
+        <div class="chart" id="chart-scatter"></div>
+      </figure>
+    </div>
+  </section>
+
+  <section id="sec2" class="section wrap" aria-labelledby="sec2-title">
+    <h2 id="sec2-title">2. 시간의 변화 <span class="q">— 15년 동안 얼마나, 어떤 속도로 커졌나?</span></h2>
+
+    <div class="chart-grid">
+      <figure class="chart-card wide">
+        <figcaption>
+          <h3>전국 총급여 추이</h3>
+          <p class="chart-note">점선은 제도 변화 시점을 표시할 뿐입니다 — 그 시점에 급여가 늘었다는 인과관계를 주장하지 않습니다.</p>
+        </figcaption>
+        <div class="chart chart-tall" id="chart-trend"></div>
+      </figure>
+
+      <figure class="chart-card wide">
+        <figcaption>
+          <h3>시도별 궤적</h3>
+          <p class="chart-note">회색 선은 전체 시도, 강조 선은 선택한 시도입니다. 지표 토글에 따라 선의 값이 바뀝니다.</p>
+        </figcaption>
+        <div class="chart chart-tall" id="chart-trajectory"></div>
+      </figure>
+
+      <figure class="chart-card wide">
+        <figcaption>
+          <h3>성장 배수 (2024 ÷ 2010)</h3>
+          <p class="chart-note">시도별 급여총액이 2010년의 몇 배가 되었는지입니다. * 세종은 출범연도인 2012년 기준입니다.</p>
+        </figcaption>
+        <div class="chart-scroll"><div class="chart chart-tall" id="chart-growth"></div></div>
+      </figure>
+    </div>
+  </section>
+
+  <section id="sec3" class="section wrap" aria-labelledby="sec3-title">
+    <h2 id="sec3-title">3. 구조 전환 <span class="q">— 서비스 구조는 어떻게 바뀌었나?</span></h2>
+
+    <div class="chart-grid">
+      <figure class="chart-card wide">
+        <figcaption>
+          <h3>재가 vs 시설 비중</h3>
+          <p class="chart-note">2012년 49.0%까지 떨어졌던 재가 비중이 2024년 62.7%로 반등했습니다 (V자 형태).</p>
+        </figcaption>
+        <div class="chart chart-tall" id="chart-mix"></div>
+      </figure>
+
+      <figure class="chart-card wide">
+        <figcaption>
+          <h3>등급 구성 변화</h3>
+          <p class="chart-note">2014년 이전 중증 비중이 100%인 것은 경증(5등급) 자체가 없었기 때문이지, 중증 환자만 있었다는 뜻이 아닙니다.</p>
+        </figcaption>
+        <div class="chart chart-tall" id="chart-grade"></div>
+      </figure>
+
+      <figure class="chart-card wide">
+        <figcaption>
+          <h3>시도별 재가 비중 이동</h3>
+          <p class="chart-note">회색 점 = 2010년(세종은 2012년), 강조색 점 = 2024년. 선택한 시도는 굵은 선으로 강조됩니다.</p>
+        </figcaption>
+        <div class="chart chart-tall-xl" id="chart-dumbbell"></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <details class="limitations">
+      <summary>한계와 주의사항</summary>
+      <ul>
+        <li><strong>인과관계를 주장하지 않습니다.</strong> 제도 변화 시점을 표시했지만 효과를 추정하지 않았습니다.</li>
+        <li><strong>수급자 수는 중복배제 값</strong>이라 지역 간 합산이 성립하지 않습니다. 비율 계산에만 썼습니다.</li>
+        <li><strong>집계 기준</strong>: 수급자 주민등록주소지 기준(연도말), 전 기간 통일했습니다.</li>
+        <li><strong>금액은 2024년 불변가격</strong>으로 실질화했습니다 (물가 영향 제거).</li>
+        <li><strong>시군구 단위는 제외</strong>했습니다. 시군구 패널에는 인구·GRDP가 없어 1인당 지표를 만들 수 없습니다.</li>
+        <li><strong>세종특별자치시는 2012년 출범</strong> — 이전 데이터가 없고 2012년 인구도 결측입니다.</li>
+      </ul>
+    </details>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p id="footer-source">출처: 불러오는 중…</p>
+    <p>생성 방식: <code>prepare_data.py</code>로 원본 엑셀에서 지표를 추출해 <code>data.json</code>으로 저장했습니다.
+      저장소: <a href="https://github.com/JAEYONG0303/sesac-web" target="_blank" rel="noopener">github.com/JAEYONG0303/sesac-web</a></p>
+  </div>
+</footer>
+
+<script src="./app.js" defer></script>
 </body>
 </html>

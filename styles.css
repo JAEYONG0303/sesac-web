@@ -1,0 +1,311 @@
+/* 장기요양보험 급여 대시보드 — 데이터가 주인공, 장식은 최소화 */
+
+:root {
+  --bg: #ffffff;
+  --bg-alt: #f8fafc;
+  --card-bg: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #2563eb;
+  --primary-soft: #dbeafe;
+  --accent: #ea580c;
+  --accent-soft: #ffedd5;
+  --grey: #cbd5e1;
+  --focus: #2563eb;
+  --radius: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --bg-alt: #131f35;
+    --card-bg: #16233c;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #2c3e5c;
+    --primary: #60a5fa;
+    --primary-soft: #1e3a5f;
+    --accent: #fb923c;
+    --accent-soft: #4a2c14;
+    --grey: #475569;
+    --focus: #93c5fd;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden; /* 375px에서 가로 스크롤 방지 — 넓은 차트는 각 카드 내부에서만 스크롤 */
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--primary);
+  color: #fff;
+  padding: 8px 14px;
+  z-index: 100;
+}
+.skip-link:focus { left: 8px; top: 8px; }
+
+a { color: var(--primary); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- 헤더 ---------- */
+.hero {
+  padding: 40px 0 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+}
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+.hero h1 {
+  margin: 0 0 14px;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  line-height: 1.3;
+}
+.lede {
+  margin: 0;
+  max-width: 780px;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* ---------- KPI 스트립 ---------- */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 24px auto;
+}
+.kpi-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.kpi-label {
+  margin: 0 0 6px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.kpi-value {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-sub {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 오류 배너 ---------- */
+.fatal-error {
+  max-width: 1200px;
+  margin: 16px auto;
+  padding: 14px 18px;
+  border: 1px solid #dc2626;
+  background: #fef2f2;
+  color: #991b1b;
+  border-radius: var(--radius);
+}
+@media (prefers-color-scheme: dark) {
+  .fatal-error { background: #3f1414; color: #fecaca; border-color: #dc2626; }
+}
+.fatal-error .fatal-detail { font-size: 0.8rem; opacity: 0.85; margin: 4px 0 0; }
+
+/* ---------- 섹션 공통 ---------- */
+.section { padding: 36px 0; }
+.section h2 {
+  font-size: 1.3rem;
+  margin: 0 0 18px;
+}
+.section h2 .q {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ---------- 컨트롤 ---------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.control-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.metric-toggle { gap: 6px; }
+.metric-btn {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.metric-btn.is-active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.year-control label { font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 6px; }
+.year-control strong { color: var(--text); font-variant-numeric: tabular-nums; }
+#play-btn {
+  border: 1px solid var(--primary);
+  background: var(--card-bg);
+  color: var(--primary);
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+#year-slider { width: 160px; }
+#region-select {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  max-width: 100%;
+}
+
+.notice {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin: 0 0 16px;
+}
+
+/* ---------- 차트 카드 ---------- */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+.chart-card {
+  margin: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px 16px;
+  min-width: 0; /* 그리드 안에서 넘치지 않도록 */
+}
+.chart-card.wide { grid-column: 1 / -1; }
+.chart-card h3 { margin: 0 0 4px; font-size: 1rem; }
+.chart-note { margin: 0 0 10px; font-size: 0.8rem; color: var(--text-muted); }
+
+.chart { width: 100%; height: 340px; }
+.chart-tall { height: 320px; }
+.chart-tall-xl { height: 520px; }
+
+.chart-scroll { overflow-x: auto; }
+.chart-scroll .chart { min-width: 720px; }
+
+/* ---------- 카토그램 ---------- */
+.cartogram {
+  display: grid;
+  gap: 4px;
+  aspect-ratio: 5 / 6;
+  margin-bottom: 8px;
+}
+.cartogram-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  line-height: 1.25;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--text);
+  transition: transform 0.1s ease;
+  min-width: 0;
+  min-height: 0;
+}
+.cartogram-cell:hover { transform: scale(1.04); }
+.cartogram-cell.is-selected { outline: 3px solid var(--accent); outline-offset: -3px; }
+.cartogram-cell.is-null { color: var(--text-muted); font-style: italic; }
+.cartogram-cell .cell-short { font-weight: 700; }
+.cartogram-cell .cell-value { font-variant-numeric: tabular-nums; }
+.cartogram-cell.is-dark-cell { color: #f8fafc; }
+.cartogram-hint { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+
+/* ---------- 한계 섹션 ---------- */
+.limitations {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  background: var(--bg-alt);
+}
+.limitations summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.limitations ul { margin: 12px 0 0; padding-left: 20px; }
+.limitations li { margin-bottom: 8px; font-size: 0.9rem; }
+
+/* ---------- 푸터 ---------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 0 40px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+.site-footer p { margin: 4px 0; }
+.site-footer code {
+  background: var(--bg-alt);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ---------- 반응형 (375px까지) ---------- */
+@media (max-width: 480px) {
+  .kpi-value { font-size: 1.3rem; }
+  #year-slider { width: 120px; }
+  .chart { height: 280px; }
+  .chart-tall-xl { height: 460px; }
+  .cartogram-cell { font-size: 0.62rem; }
+}
