@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>권재용</title>
+  <style>
+    body {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-family: system-ui, "Malgun Gothic", sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2em;
+    }
+
+    th, td {
+      border: 1px solid #6c5050;
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #c75b5b;
+    }
+
+    td.price {
+      text-align: right;
+    }
+
+    .source {
+      margin-top: 2.5em;
+      font-size: 0.8rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>권재용</h1>
+
+  <p>
+    안녕하세요, 권재용입니다. 무언가를 만들고 고치는 일을 좋아합니다.
+    복잡한 것을 단순하게 정리할 때 가장 즐겁습니다.
+  </p>
+  <p>
+    요즘은 웹과 개발 도구에 관심을 두고 하나씩 배워 나가는 중입니다.
+    이 페이지는 그 기록을 남겨 두려고 만든 첫 페이지입니다.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>항목</th>
+        <th>설명</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>좋아하는 것</td>
+        <td>게임, 잠자는것, 그리고 따뜻한 커피 한 잔</td>
+      </tr>
+      <tr>
+        <td>요즘 배우는 것</td>
+        <td>SQL, PYTHON</td>
+      </tr>
+      <tr>
+        <td>오늘 목표</td>
+        <td>내 손으로 만든 첫 웹페이지를 브라우저에서 확인하기</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>노원구 아파트 실거래 살펴보기</h2>
+
+  <p>
+    노원구의 아파트 매매 거래 7,190건을 살펴봤습니다. 평균 거래가는 약 6.5억 원이었습니다.
+    가장 비싸게 팔린 상위 5건은 모두 15억 원대로, 평균의 두 배가 넘습니다.
+    비싼 거래만 뽑았으니 평균보다 훨씬 높게 나오는 것이 자연스럽습니다.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>건물명</th>
+        <th>물건금액(만원)</th>
+        <th>계약일</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>동진신안</td>
+        <td class="price">156,000</td>
+        <td>2026-05-20</td>
+      </tr>
+      <tr>
+        <td>대림벽산(363)</td>
+        <td class="price">155,000</td>
+        <td>2025-07-28</td>
+      </tr>
+      <tr>
+        <td>동진신안</td>
+        <td class="price">154,000</td>
+        <td>2025-09-29</td>
+      </tr>
+      <tr>
+        <td>동진신안</td>
+        <td class="price">153,300</td>
+        <td>2025-09-12</td>
+      </tr>
+      <tr>
+        <td>동진신안</td>
+        <td class="price">152,500</td>
+        <td>2026-04-06</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="source">
+    데이터: 서울열린데이터광장 서울시 부동산 실거래가 정보(OA-21275),
+    2025년 7월~2026년 6월 아파트 매매 기준
+  </p>
+</body>
+</html>
